@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Marcel Mirror Bot</title>
+  <style>
+    body { font-family: sans-serif; margin: 0; padding: 20px; background: #f3f3f3; }
+    #messages { max-height: 400px; overflow-y: auto; border: 1px solid #ccc; padding: 10px; background: white; }
+    .msg { margin-bottom: 10px; }
+    .user { font-weight: bold; }
+    input { width: 80%; padding: 10px; }
+    button { padding: 10px; }
+  </style>
+</head>
+<body>
+  <h2>🪞 Marcel Mirror is listening...</h2>
+  <div id="messages"></div>
+  <br>
+  <input id="msgInput" placeholder="اكتب حاجة..." />
+  <button onclick="send()">Send</button>
+
+  <script>
+    async function send() {
+      const input = document.getElementById("msgInput");
+      const msg = input.value;
+      if (!msg) return;
+
+      const messages = document.getElementById("messages");
+      messages.innerHTML += `<div class="msg"><span class="user">You:</span> ${msg}</div>`;
+
+      const res = await fetch("/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: msg })
+      });
+      const data = await res.json();
+
+      messages.innerHTML += `<div class="msg"><span class="user">Bot:</span> ${data.reply}</div>`;
+      input.value = "";
+    }
+  </script>
+</body>
+</html>
